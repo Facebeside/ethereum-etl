@@ -112,7 +112,6 @@ class EthStreamerAdapter:
             max_workers=self.max_workers,
             item_exporter=blocks_and_transactions_item_exporter,
             export_blocks=self._should_export(EntityType.BLOCK),
-            export_transactions=self._should_export(EntityType.TRANSACTION)
         )
         blocks_and_transactions_job.run()
         blocks = blocks_and_transactions_item_exporter.get_items('block')
