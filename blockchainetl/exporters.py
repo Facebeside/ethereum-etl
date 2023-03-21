@@ -86,28 +86,53 @@ class BaseItemExporter(object):
             else:
                 field_iter = (x for x in self.fields_to_export if x in item)
 
+        # for field_name in field_iter:
+        #     if field_name in item:
+        #         field = {} if isinstance(item, dict) else item.fields[field_name]
+        #         value = self.serialize_field(field, field_name, item[field_name])
+        #     else:
+        #         value = default_value
+        #
+        #     yield field_name, value
+
+
+        # write transactions
         for field_name in field_iter:
             if field_name in item:
-                field = {} if isinstance(item, dict) else item.fields[field_name]
-                value = self.serialize_field(field, field_name, item[field_name])
+                if field_name == 'transactions':
+                    tx_index = 0
+                    for tx in item[field_name]:
+                        field = {}
+                        tx_index += 1
+                        tx_name = "tx" + str(tx_index)
+                        tx_to_list = [tx]
+                        value = self.serialize_field(field, tx_name, tx_to_list)
+                        yield tx_name, value
+                else:
+                    field = {} if isinstance(item, dict) else item.fields[field_name]
+                    value = self.serialize_field(field, field_name, item[field_name])
+                    yield field_name, value
             else:
                 value = default_value
-
-            yield field_name, value
+                yield field_name, value
 
 
 class CsvItemExporter(BaseItemExporter):
 
-    def __init__(self, file, include_headers_line=True, join_multivalued=',', **kwargs):
+    # set include_headers_line=False
+    def __init__(self, file, include_headers_line=False, join_multivalued=',', **kwargs):
         self._configure(kwargs, dont_fail=True)
         if not self.encoding:
             self.encoding = 'utf-8'
         self.include_headers_line = include_headers_line
+
+        # delete bank
         self.stream = io.TextIOWrapper(
             file,
             line_buffering=False,
             write_through=True,
-            encoding=self.encoding
+            encoding=self.encoding,
+            newline=''
         ) if six.PY3 else file
         self.csv_writer = csv.writer(self.stream, **kwargs)
         self._headers_not_written = True

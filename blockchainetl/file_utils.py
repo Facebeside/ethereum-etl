@@ -38,7 +38,8 @@ def smart_open(filename=None, mode='w', binary=False, create_parent_dirs=True):
         fh.close()
 
 
-def get_file_handle(filename, mode='w', binary=False, create_parent_dirs=True):
+# modify the mode 'w'>>'a'
+def get_file_handle(filename, mode='a', binary=False, create_parent_dirs=True):
     if create_parent_dirs and filename is not None:
         dirname = os.path.dirname(filename)
         pathlib.Path(dirname).mkdir(parents=True, exist_ok=True)
