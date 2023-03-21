@@ -119,7 +119,7 @@ class BaseItemExporter(object):
 
 class CsvItemExporter(BaseItemExporter):
 
-    # set include_headers_line=False
+    # set include_headers_line=False don't write header
     def __init__(self, file, include_headers_line=False, join_multivalued=',', **kwargs):
         self._configure(kwargs, dont_fail=True)
         if not self.encoding:
