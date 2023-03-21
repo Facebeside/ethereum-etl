@@ -65,7 +65,14 @@ class EthBlockMapper(object):
 
         return block
 
+
     def block_to_dict(self, block):
+        # add transactions
+        transactions = [
+            self.transaction_mapper.transaction_to_dict(tx)
+            for tx in block.transactions
+        ]
+
         return {
             'type': 'block',
             'number': block.number,
@@ -86,5 +93,30 @@ class EthBlockMapper(object):
             'gas_used': block.gas_used,
             'timestamp': block.timestamp,
             'transaction_count': block.transaction_count,
-            'base_fee_per_gas': block.base_fee_per_gas
+            'base_fee_per_gas': block.base_fee_per_gas,
+            'transactions': transactions
         }
+
+    # def block_to_dict(self, block):
+    #     return {
+    #         'type': 'block',
+    #         'number': block.number,
+    #         'hash': block.hash,
+    #         'parent_hash': block.parent_hash,
+    #         'nonce': block.nonce,
+    #         'sha3_uncles': block.sha3_uncles,
+    #         'logs_bloom': block.logs_bloom,
+    #         'transactions_root': block.transactions_root,
+    #         'state_root': block.state_root,
+    #         'receipts_root': block.receipts_root,
+    #         'miner': block.miner,
+    #         'difficulty': block.difficulty,
+    #         'total_difficulty': block.total_difficulty,
+    #         'size': block.size,
+    #         'extra_data': block.extra_data,
+    #         'gas_limit': block.gas_limit,
+    #         'gas_used': block.gas_used,
+    #         'timestamp': block.timestamp,
+    #         'transaction_count': block.transaction_count,
+    #         'base_fee_per_gas': block.base_fee_per_gas
+    #     }

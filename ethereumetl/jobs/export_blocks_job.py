@@ -33,6 +33,8 @@ from ethereumetl.utils import rpc_response_batch_to_results, validate_range
 
 # Exports blocks and transactions
 class ExportBlocksJob(BaseJob):
+
+    # alter __init__ function
     def __init__(
             self,
             start_block,
@@ -42,7 +44,7 @@ class ExportBlocksJob(BaseJob):
             max_workers,
             item_exporter,
             export_blocks=True,
-            export_transactions=True):
+            ):
         validate_range(start_block, end_block)
         self.start_block = start_block
         self.end_block = end_block
@@ -53,9 +55,9 @@ class ExportBlocksJob(BaseJob):
         self.item_exporter = item_exporter
 
         self.export_blocks = export_blocks
-        self.export_transactions = export_transactions
-        if not self.export_blocks and not self.export_transactions:
-            raise ValueError('At least one of export_blocks or export_transactions must be True')
+        # self.export_transactions = export_transactions
+        if not self.export_blocks:
+            raise ValueError('export_blocks must be True')
 
         self.block_mapper = EthBlockMapper()
         self.transaction_mapper = EthTransactionMapper()
@@ -71,7 +73,9 @@ class ExportBlocksJob(BaseJob):
         )
 
     def _export_batch(self, block_number_batch):
-        blocks_rpc = list(generate_get_block_by_number_json_rpc(block_number_batch, self.export_transactions))
+        # blocks_rpc = list(generate_get_block_by_number_json_rpc(block_number_batch, self.export_transactions))
+
+        blocks_rpc = list(generate_get_block_by_number_json_rpc(block_number_batch, include_transactions=True))
         response = self.batch_web3_provider.make_batch_request(json.dumps(blocks_rpc))
         results = rpc_response_batch_to_results(response)
         blocks = [self.block_mapper.json_dict_to_block(result) for result in results]
@@ -82,9 +86,9 @@ class ExportBlocksJob(BaseJob):
     def _export_block(self, block):
         if self.export_blocks:
             self.item_exporter.export_item(self.block_mapper.block_to_dict(block))
-        if self.export_transactions:
-            for tx in block.transactions:
-                self.item_exporter.export_item(self.transaction_mapper.transaction_to_dict(tx))
+        # if self.export_transactions:
+        #     for tx in block.transactions:
+        #         self.item_exporter.export_item(self.transaction_mapper.transaction_to_dict(tx))
 
     def _end(self):
         self.batch_work_executor.shutdown()
