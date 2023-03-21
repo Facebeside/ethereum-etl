@@ -93,6 +93,9 @@ def create_item_exporter(output):
             'contract': 'contracts',
             'token': 'tokens',
         })
+    elif item_exporter_type == ItemExporterType.HDFS:
+        from blockchainetl.jobs.exporters.hdfs_item_exporter import HDFSItemExporter
+        item_exporter = HDFSItemExporter(output[len('hdfs://'):], )
 
     else:
         raise ValueError('Unable to determine item exporter type for output ' + output)
@@ -112,18 +115,20 @@ def get_bucket_and_path_from_gcs_output(output):
 
 
 def determine_item_exporter_type(output):
-    if output is not None and output.startswith('projects'):
-        return ItemExporterType.PUBSUB
-    if output is not None and output.startswith('kinesis://'):
-        return ItemExporterType.KINESIS
-    if output is not None and output.startswith('kafka'):
-        return ItemExporterType.KAFKA
-    elif output is not None and output.startswith('postgresql'):
-        return ItemExporterType.POSTGRES
-    elif output is not None and output.startswith('gs://'):
-        return ItemExporterType.GCS
-    elif output is None or output == 'console':
+    if output is None or output == 'console':
         return ItemExporterType.CONSOLE
+    if output.startswith('projects'):
+        return ItemExporterType.PUBSUB
+    if output.startswith('kinesis://'):
+        return ItemExporterType.KINESIS
+    if output.startswith('kafka'):
+        return ItemExporterType.KAFKA
+    if output.startswith('postgresql'):
+        return ItemExporterType.POSTGRES
+    if output.startswith('gs://'):
+        return ItemExporterType.GCS
+    if output.startswith('hdfs://'):
+        return ItemExporterType.HDFS
     else:
         return ItemExporterType.UNKNOWN
 
@@ -135,4 +140,5 @@ class ItemExporterType:
     GCS = 'gcs'
     CONSOLE = 'console'
     KAFKA = 'kafka'
+    HDFS = 'hdfs'
     UNKNOWN = 'unknown'

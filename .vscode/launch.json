@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Streaming",
+            "type": "python",
+            "request": "launch",
+            "program": "ethereumetl.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "stream",
+                "-p",
+                "https://eth.llamarpc.com",
+                "-o",
+                "hdfs://localhost:9870/test/data.csv"
+            ],
+            "justMyCode": true
+        }
+    ]
+}
