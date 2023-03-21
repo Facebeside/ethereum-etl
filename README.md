@@ -2,10 +2,12 @@
 
 ###  ETL
 
-1. 自定义csv格式  blocks.csv
+1. 自定义csv格式  
+
+   blocks.csv
 
    | Column            | Type       |
-| ----------------- | ---------- |
+   | ----------------- | ---------- |
    | number            | bigint     |
    | hash              | hex_string |
    | parent_hash       | hex_string |
@@ -27,17 +29,16 @@
    | base_fee_per_gas  | bigint     |
    | transaction1      |            |
    | transaction2      |            |
-| ...               |            |
-   
+   | ...               |            |
+
 2. 实时更新
 
    1. 监控 
-   2. 导出 将新生成的区块 做1中的合并操作 追加到blocks.csv文件中
+   2. 导出 将新生成的区块  做1中的合并操作 追加到blocks.csv文件中
 
 ## demo
 
-查询实例 各两个
+查询实例 各两个 
 
 1. 静态（getBlockByTimestamp）
-2. 动态（兑换率）
-
+2. 动态（swap）
