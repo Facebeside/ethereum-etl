@@ -95,7 +95,7 @@ def create_item_exporter(output):
         })
     elif item_exporter_type == ItemExporterType.HDFS:
         from blockchainetl.jobs.exporters.hdfs_item_exporter import HDFSItemExporter
-        item_exporter = HDFSItemExporter(output[len('hdfs://'):], )
+        item_exporter = HDFSItemExporter(output[len('hdfs://'):])
 
     else:
         raise ValueError('Unable to determine item exporter type for output ' + output)
