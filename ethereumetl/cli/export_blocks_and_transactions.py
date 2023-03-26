@@ -23,6 +23,7 @@
 
 import click
 
+from blockchainetl.jobs.exporters.hdfs_item_exporter import HDFSItemExporter
 from ethereumetl.jobs.export_blocks_job import ExportBlocksJob
 from ethereumetl.jobs.exporters.blocks_and_transactions_item_exporter import blocks_and_transactions_item_exporter
 from blockchainetl.logging_utils import logging_basic_config
@@ -74,6 +75,10 @@ def export_blocks_and_transactions(start_block, end_block, batch_size, provider_
     provider_uri = check_classic_provider_uri(chain, provider_uri)
     if blocks_output is None:
         raise ValueError('--blocks-output option must be provided')
+    if blocks_output.startswith('hdfs://'):
+        item_exporter = HDFSItemExporter(blocks_output[len('hdfs://'):])
+    else:
+        item_exporter = blocks_and_transactions_item_exporter(blocks_output)
 
     job = ExportBlocksJob(
         start_block=start_block,
@@ -81,7 +86,7 @@ def export_blocks_and_transactions(start_block, end_block, batch_size, provider_
         batch_size=batch_size,
         batch_web3_provider=ThreadLocalProxy(lambda: get_provider_from_uri(provider_uri, batch=True)),
         max_workers=max_workers,
-        item_exporter=blocks_and_transactions_item_exporter(blocks_output),
+        item_exporter=item_exporter,
         export_blocks=blocks_output is not None,
         )
     job.run()
