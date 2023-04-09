@@ -40,8 +40,18 @@ class EthTransactionMapper(object):
         transaction.gas = hex_to_dec(json_dict.get('gas'))
         transaction.gas_price = hex_to_dec(json_dict.get('gasPrice'))
         transaction.input = json_dict.get('input')
-        transaction.max_fee_per_gas = hex_to_dec(json_dict.get('maxFeePerGas'))
-        transaction.max_priority_fee_per_gas = hex_to_dec(json_dict.get('maxPriorityFeePerGas'))
+        if json_dict.get('maxFeePerGas') is not None:
+            transaction.max_fee_per_gas = hex_to_dec(json_dict.get('maxFeePerGas'))
+        else:
+            transaction.max_fee_per_gas = 0
+        # transaction.max_fee_per_gas = [hex_to_dec(json_dict.get('maxFeePerGas')) if json_dict.get('maxFeePerGas') is not None else 0]
+        if json_dict.get('maxPriorityFeePerGas') is not None:
+            transaction.max_priority_fee_per_gas = hex_to_dec(json_dict.get('maxPriorityFeePerGas'))
+        else:
+            transaction.max_priority_fee_per_gas = 0
+        # transaction.max_priority_fee_per_gas = [hex_to_dec(json_dict.get('maxPriorityFeePerGas')) if json_dict.get('maxPriorityFeePerGas') is not None else 0]
+        # transaction.max_fee_per_gas = hex_to_dec(json_dict.get('maxFeePerGas'))
+        # transaction.max_priority_fee_per_gas = hex_to_dec(json_dict.get('maxPriorityFeePerGas'))
         transaction.transaction_type = hex_to_dec(json_dict.get('type'))
         return transaction
 
